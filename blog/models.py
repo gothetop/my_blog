@@ -21,6 +21,9 @@ class Category(models.Model):
     class Meta:
         verbose_name = verbose_name_plural = "分类"
 
+    def __str__(self):
+        return self.name
+
 
 class Tag(models.Model):
     """标签类"""
@@ -40,6 +43,9 @@ class Tag(models.Model):
 
     class Meta:
         verbose_name = verbose_name_plural = "标签"  # 设置了在管理页面的单数名称和复数名称都为标签
+
+    def __str__(self):
+        return self.name
 
 
 class Post(models.Model):
@@ -68,4 +74,7 @@ class Post(models.Model):
         verbose_name = "文章"
         verbose_name_plural = "文章"
         ordering = ['-id']  # 根据id进行降序排列，新编写的文章在上面
+
+    def __str__(self):
+        return self.title
 
