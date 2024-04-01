@@ -18,8 +18,15 @@ from django.contrib import admin
 from django.urls import path
 
 from .custom_site import custom_site
+from blog.views import post_list, post_detail
+from config.views import links
 
 urlpatterns = [
     path('super_admin/', admin.site.urls),   # 超级管理员后台
-    path('admin/', custom_site.urls)   # 博客内容管理后台
+    path('admin/', custom_site.urls),   # 博客内容管理后台
+    path('', post_list, name='index'),
+    path('category/<int:category_id>/', post_list, name='category-list'),
+    path('tag/<int:tag_id>/', post_list, name='tag-list'),
+    path('post/<int:post_id>/', post_detail, name='post-detail'),
+    path('links/', links, name='links'),
 ]
