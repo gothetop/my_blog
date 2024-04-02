@@ -1,0 +1,55 @@
+{% extends './base.html' %}
+
+{% block title %}
+    {% if tag %}
+        标签页：{{ tag.name }}
+    {% elif category %}
+        分类页：{{ category.name }}
+    {% endif %}
+{% endblock %}
+
+{% block main %}
+    {% if tag %}
+        <div class="page-header">
+            <h1>
+                标签页：{{ tag.name }}
+            </h1>
+        </div>
+    {% endif %}
+    {% if category %}
+        <div class="page-header">
+            <h1>
+                分类页：{{ category.name }}
+            </h1>
+        </div>
+    {% endif %}
+    <div>
+        {% for post in post_list %}
+            <div style="border: 1px solid #949494; border-radius: 20px; padding: 20px 20px 10px 20px; margin-bottom: 20px;">
+                <div class="media">
+                    <div class="media-body">
+                        <h4 class="media-heading"><a href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h4>
+                        <div style="margin-bottom: 5px;">
+                            <span>作者：{{ post.owner.username }}</span>
+                            <span>分类：{{ post.category.name }}</span>
+                            <span>标签：{{ post.tag.name }}</span>
+                        </div>
+                        <p>
+                            {{ post.desc }}
+                            <span><a href="{% url 'post-detail' post.id %}">详细内容</a></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% if page_obj %}
+        {% if page_obj.has_previous %}
+            <a class="btn btn-info" href="?page={{ page_obj.previous_page_number }}">上一页</a>
+        {% endif %}
+        当前：{{ page_obj.number }} 页，共 {{ paginator.num_pages }} 页.
+        {% if page_obj.has_next %}
+            <a class="btn btn-info" href="?page={{ page_obj.next_page_number }}">下一页</a>
+        {% endif %}
+    {% endif %}
+{% endblock %}

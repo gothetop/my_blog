@@ -54,7 +54,7 @@ class CommonViewMixin:
 class IndexView(CommonViewMixin, ListView):
     """首页类视图"""
     queryset = Post.latest_posts()
-    paginate_by = 1  # 一页展示五条数据
+    paginate_by = 5  # 一页展示五条数据
     context_object_name = "post_list"  # 修改在模板中的对象名
     template_name = 'blog/list.html'
 
