@@ -1,9 +1,12 @@
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.views.generic import ListView, DetailView
 
 from blog.models import Tag, Post, Category
 from config.models import SideBar
+from comment.forms import CommentForm
+from comment.models import Comment
 
 """
 # 函数视图如下：
@@ -41,6 +44,7 @@ def post_detail(request, post_id):
 
 class CommonViewMixin:
     """通用类：评论，上下导航栏"""
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update({
@@ -61,6 +65,7 @@ class IndexView(CommonViewMixin, ListView):
 
 class CategoryView(IndexView):
     """分类页面视图，继承自首页"""
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         category_id = self.kwargs.get('category_id')  # 在url请求链接中找到category_id参数
@@ -73,12 +78,13 @@ class CategoryView(IndexView):
     def get_queryset(self):
         """重写页面获取到的数据集, 根据分类过滤"""
         queryset = super().get_queryset()
-        category_id = self.kwargs.get('category_id')   # self.kwargs指的是url的请求链接中带来的东西
+        category_id = self.kwargs.get('category_id')  # self.kwargs指的是url的请求链接中带来的东西
         return queryset.filter(category_id=category_id)
 
 
 class TagView(IndexView):
     """标签页，继承于首页类视图"""
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         tag_id = self.kwargs.get('tag_id')
@@ -101,3 +107,33 @@ class PostDetailView(CommonViewMixin, DetailView):
     template_name = 'blog/detail.html'
     context_object_name = "post"
     pk_url_kwarg = 'post_id'
+
+
+class SearchView(IndexView):
+    """搜索视图，继承自index视图"""
+
+    # 将关键字获取到，并且添加到模板上下文中，用于关键词的展示
+    def get_context_data(self, **kwargs):
+        """增加关键字上下文"""
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'keyword': self.request.GET.get('keyword', ""),
+        })
+        return context
+
+    def get_queryset(self):
+        """重写展示的数据集"""
+        queryset = super().get_queryset()
+        keyword = self.request.GET.get('keyword')
+        if not keyword:
+            return queryset
+        return queryset.filter(Q(title__icontains=keyword) | Q(desc__icontains=keyword))
+
+
+class AuthorView(IndexView):
+    """作者页面，也是继承自首页视图"""
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        author_id = self.kwargs.get('owner_id')
+        return queryset.filter(owner_id=author_id)

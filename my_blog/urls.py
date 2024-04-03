@@ -18,8 +18,9 @@ from django.contrib import admin
 from django.urls import path
 
 from .custom_site import custom_site
-from blog.views import IndexView, CategoryView, TagView, PostDetailView
-from config.views import links
+from blog.views import IndexView, CategoryView, TagView, PostDetailView, SearchView, AuthorView
+from config.views import LinkView
+from comment.views import CommentView
 
 urlpatterns = [
     path('super_admin/', admin.site.urls),   # 超级管理员后台
@@ -28,5 +29,8 @@ urlpatterns = [
     path('category/<int:category_id>/', CategoryView.as_view(), name='category-list'),
     path('tag/<int:tag_id>/', TagView.as_view(), name='tag-list'),
     path('post/<int:post_id>/', PostDetailView.as_view(), name='post-detail'),
-    path('links/', links, name='links'),
+    path('links/', LinkView.as_view(), name='links'),
+    path('search/', SearchView.as_view(), name='search'),
+    path('author/<int:owner_id>/', AuthorView.as_view(), name='author'),
+    path('comment/', CommentView.as_view(), name='comment'),
 ]
