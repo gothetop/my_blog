@@ -2,7 +2,7 @@
 <div class="comment">
     <form class="form-group" action="/comment/" method="POST" novalidate>
         {% csrf_token %}
-        <input name="target" type="hidden" value="{{ request.path }}"/>
+        <input name="target" type="hidden" value="{{ target }}"/>
         {{ comment_form }}
         <input style="margin-top: 25px;" class="btn-success btn" type="submit" value="写好了！"/>
     </form>
@@ -15,7 +15,9 @@
                     <span>{{ comment.created_time }}</span>
                 </div>
                 <div class="comment-content">
+                    {% autoescape off %}
                     {{ comment.content }}
+                    {% endautoescape %}
                 </div>
             </li>
         {% endfor %}
