@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
-
 from django.db import models
+import mistune
 
 
 class Category(models.Model):
@@ -78,6 +78,7 @@ class Post(models.Model):
     title = models.CharField(max_length=255, verbose_name="标题")
     desc = models.CharField(max_length=1024, blank=True, verbose_name="摘要")  # 该字段不希望由用户填写，而是在后台自动生成
     content = models.TextField(verbose_name="正文", help_text="正文必须为MarkDown格式")
+    content_html = models.TextField(verbose_name="正文html格式", blank=True, editable=False)
     status = models.PositiveIntegerField(default=STATUS_NORMAL,
                                          choices=STATUS_ITEMS,
                                          verbose_name="状态")
@@ -141,4 +142,12 @@ class Post(models.Model):
     @classmethod
     def hot_posts(cls):
         """获取最热文章"""
-        return cls.objects.filter(status=cls.STATUS_NORMAL).only('title', 'id').order_by('-pv')
+        return cls.objects.filter(status=cls.STATUS_NORMAL).only('title', 'id').order_by('-pv')[:1]
+
+    def save(self, *args, **kwargs):
+        """重写保存方法，在content_html中默认添加数据"""
+        self.content_html = mistune.markdown(self.content)
+        # 这里就先默认是文章html格式的前140个字吧，后续再加逻辑处理
+        self.desc = self.content_html[:140]
+
+        super().save(*args, **kwargs)

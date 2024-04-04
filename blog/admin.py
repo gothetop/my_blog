@@ -87,8 +87,7 @@ class PostAdmin(BaseOwnerAdmin):
                 'content',
             ),
         }),
-        ('额外内容', {
-            'classes': ('collapse',),  # 通过classes配置为折叠内容
+        ('额外内容', { # 通过classes配置为折叠内容
             'fields': ('tag',),
         })
     )

@@ -30,3 +30,5 @@ class Comment(models.Model):
         """返回当前页面的所有评论"""
         print(target)
         return cls.objects.filter(target=target, status=cls.STATUS_NORMAL)
+
+

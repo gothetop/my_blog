@@ -10,14 +10,22 @@
 
 {% block css %}
     <style>
-    .post_card{
-        cursor: pointer;
-        transition: all .5s;
-    }
-    .post_card:hover{
-        background: whitesmoke;
-        margin-right: 30px;
-    }
+        .post_card {
+            cursor: pointer;
+            transition: all .5s;
+        }
+
+        .post_card:hover {
+            background: whitesmoke;
+            margin-right: 30px;
+        }
+        .post-list-desc{
+            width: 700px;
+        }
+        .post-desc-width{
+            width: 700px;
+        }
+
     </style>
 {% endblock %}
 
@@ -38,17 +46,20 @@
     {% endif %}
     <div>
         {% for post in post_list %}
-            <div class="post_card" data-n = "{{ post.id }}" style="border: 1px solid #949494; border-radius: 20px; padding: 20px 20px 10px 20px; margin-bottom: 20px;">
+            <div class="post_card" data-n="{{ post.id }}"
+                 style="border: 1px solid #949494; border-radius: 20px; padding: 20px 20px 10px 20px; margin-bottom: 20px;">
                 <div class="media">
-                    <div class="media-body">
+                    <div class="media-body" id="post-card-width">
                         <h4 class="media-heading"><a href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h4>
                         <div style="margin-bottom: 5px;">
                             <span>作者：{{ post.owner.username }}</span>
                             <span>分类：{{ post.category.name }}</span>
                             <span>标签：{{ post.tag.name }}</span>
                         </div>
-                        <p>
-                            {{ post.desc }}
+                        <p class="post-list-desc">
+                            {% autoescape off %}
+                                {{ post.desc }}
+                            {% endautoescape %}
                             <span><a href="{% url 'post-detail' post.id %}">详细内容</a></span>
                         </p>
                     </div>
@@ -56,6 +67,7 @@
             </div>
         {% endfor %}
     </div>
+    <div style="margin-bottom: 100px;">
     {% if page_obj %}
         {% if page_obj.has_previous %}
             <a class="btn btn-info" href="?page={{ page_obj.previous_page_number }}">上一页</a>
@@ -65,17 +77,18 @@
             <a class="btn btn-info" href="?page={{ page_obj.next_page_number }}">下一页</a>
         {% endif %}
     {% endif %}
+    </div>
 {% endblock %}
 
 {% block js %}
-{#    <script>#}
-{#    oPostCards = document.getElementsByClassName("post_card");#}
-{#    for (let i = 0; i < oPostCards.length; i++){#}
-{#        oPostCards[i].addEventListener("click", function(){#}
-{#            var post_id = oPostCards[i].getAttribute('data-n');#}
-{#            let myUrl = "{% url 'post-detail' %}".replace('post_id', post_id)#}
-{#            location.href = myUrl#}
-{#        })#}
-{#    }#}
+    <script>
+    {#    oPostCards = document.getElementsByClassName("post_card");#}
+    {#    for (let i = 0; i < oPostCards.length; i++){#}
+    {#        oPostCards[i].addEventListener("click", function(){#}
+    {#            var post_id = oPostCards[i].getAttribute('data-n');#}
+    {#            let myUrl = "{% url 'post-detail' %}".replace('post_id', post_id)#}
+    {#            location.href = myUrl#}
+    {#        })#}
+    {#    }#}
     </script>
 {% endblock %}
